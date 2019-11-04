@@ -10,7 +10,7 @@ def binseq(k):
 
 def MaxEval(individual):
     negInd=list(map(int,[not i for i in list(map(bool,individual))]))
-    return max( (sum(individual),) , (sum(negInd),) ) 
+    return max( (sum(individual)) , (sum(negInd)) ) 
 
 def plotBinSeq(BinSeq, FitFunction, PlotProperty):
     yaxis=[FitFunction(i) for i in BinSeq]  # evaluate the FitFunction
@@ -26,12 +26,17 @@ def ScatBinSeq(BinSeq, FitFunction):
     plt.grid(True)
     return plt
 
+def BarBinSeq(BinSeq, FitFunction):
+    yaxis=[FitFunction(i) for i in BinSeq]  # evaluate the FitFunction
+    xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
+    plt.grid(True)
+    plt.bar(xaxis,yaxis)
+    return plt
+
 # define Individual size
 IND_SIZE = 6
 # define the population size
 NUM_IND = 8
-# number of generations
-NUM_GEN = 3
 
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -44,7 +49,12 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 population = toolbox.population(n=NUM_IND)
 
+plt.subplot(121)
 plotBinSeq(binseq(6), MaxEval, 'r')
 ScatBinSeq(population, MaxEval)
+
+plt.subplot(122)
+BarBinSeq(binseq(6), MaxEval)
+BarBinSeq(population, MaxEval)
 
 plt.show()

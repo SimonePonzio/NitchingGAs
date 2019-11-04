@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import random
 from deap import algorithms, base, creator, tools
