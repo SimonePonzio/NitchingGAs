@@ -1,18 +1,18 @@
-#!/bin/python
+#!/bin/python3
 
 import random
 from deap import algorithms, base, creator, tools
 
 # plot stuff
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # %matplotlib inline
 # %config InlineBackend.figure_format = 'retina'
-# plt.rc('text', usetex=True)
-# plt.rc('font', family='serif')
-# plt.rcParams['text.latex.preamble'] ='\\usepackage{libertine}\n\\usepackage[utf8]{inputenc}'
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+plt.rcParams['text.latex.preamble'] ='\\usepackage{libertine}\n\\usepackage[utf8]{inputenc}'
 
-# # more plot stuff
+# more plot stuff
 # import seaborn
 # seaborn.set(style='whitegrid')
 # seaborn.set_context('notebook')
