@@ -1,14 +1,15 @@
+#!/usr/bin/python3
+
 def FitSharing(individual, pop, fitFunction, distanceFunction):
-    sigma = 0.2
+    sigma = 0.6
     alpha = 1
     nitche = 0
     fit = fitFunction(individual)
-    print(fit)
     for others in pop:
         dist = distanceFunction(individual, others)
         if dist < sigma:
             nitche = nitche + ( 1 - (dist/sigma)**alpha )
-    return(fit[0]/nitche)
+    return(fit[0]/nitche),
     
 # define the distance function as hamming distance
 def NormHamming2(x,y):

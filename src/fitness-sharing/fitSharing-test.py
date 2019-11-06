@@ -31,12 +31,11 @@ def FitSharing(individual, pop, fitFunction, distanceFunction):
     alpha = 1
     nitche = 0
     fit = fitFunction(individual)
-    print(fit)
     for others in pop:
         dist = distanceFunction(individual, others)
         if dist < sigma:
             nitche = nitche + ( 1 - (dist/sigma)**alpha )
-    return(fit[0]/nitche)        
+    return(fit[0]/nitche),        
 
 # declare and initialize a varible from class Toolbox
 toolbox = base.Toolbox()

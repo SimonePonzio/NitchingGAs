@@ -25,13 +25,11 @@ def ScatBinSeq(BinSeq, FitValue):
 def BarBinFct(BinSeq, FitFunction):
     yaxis=[FitFunction(i) for i in BinSeq]  # evaluate the FitFunction
     xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
-    plt.grid(True)
     plt.bar(xaxis,yaxis)
     return plt
 
 def BarBinSeq(BinSeq, FitValue):
     # yaxis=[FitFunction(i) for i in BinSeq]  # evaluate the FitFunction
     xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
-    plt.grid(True)
     plt.bar(xaxis,FitValue)
     return plt
