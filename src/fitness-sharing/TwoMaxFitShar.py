@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 from fitsharing import FitSharing, NormHamming2
 
 # define Individual size
-IND_SIZE = 7
+IND_SIZE = 8
 # define num of individual
-NUM_IND = 20
+NUM_IND = 100
 # define num of generations
-NUM_GEN = 5
+NUM_GEN = 15
 
 creator.create("FitnShare", base.Fitness, weights=(1.0,))
 creator.create("Individual", list, fitness=creator.FitnShare)
@@ -41,18 +41,13 @@ AllPossibleFits = [MaxMinEval(i)[0] for i in AllBinSeq]
 
 for gen in range(NUM_GEN):
     offspring = algorithms.varAnd(population, toolbox, cxpb=0.5, mutpb=0.1)
-    # fits = toolbox.map(toolbox.evaluate, offspring)
-    # for fit, ind in zip(fits, offspring):
-    #     ind.fitness.values = fit
     for ind in offspring:
         ind.fitness.values = toolbox.evaluate(ind, offspring)
-
     population = toolbox.select(offspring, k=len(population))
 
     BarBinSeq(AllBinSeq, AllPossibleFits)
-    # print(population)
     BarBinSeq(population, [MaxMinEval(i)[0] for i in population])
     plt.show()
 
-top10 = tools.selBest(population, k=3)
-print(top10)
+# top10 = tools.selBest(population, k=3)
+# print(top10)
