@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 def FitSharing(individual, pop, fitFunction, distanceFunction):
-    sigma = 0.5
+    sigma = 0.05
     alpha = 1
     nitche = 0
     fit = fitFunction(individual)
