@@ -11,7 +11,7 @@ IND_SIZE = 10
 # define num of individual
 NUM_IND = 200
 # define num of generations
-NUM_GEN = 15
+NUM_GEN = 10
 
 creator.create("FitnShare", base.Fitness, weights=(1.0,))
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -34,7 +34,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
-toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("select", tools.selTournament, tournsize=3, fit_attr='fitshare')
 
 population = toolbox.population(n=NUM_IND)
 
@@ -53,5 +53,5 @@ for gen in range(NUM_GEN):
 
 for ind in population:
     ind.fitness.values = toolbox.evalfit(ind)
-top10 = tools.selBest(population, k=3, fit_attr='fitness')
-print(top10)
+top3 = tools.selBest(population, k=3, fit_attr='fitness')
+print(top3)

@@ -8,11 +8,11 @@ from fitsharing import FitSharing, NormHamming2
 from statistics import mean
 
 # define Individual size
-IND_SIZE = 100
+IND_SIZE = 50
 # define num of individual
-NUM_IND = 200
+NUM_IND = 100
 # define max num of generations
-MAX_NUM_GEN = 30
+MAX_NUM_GEN = 50
 
 creator.create("FitnShare", base.Fitness, weights=(1.0,))
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -35,7 +35,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
-toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("select", tools.selTournament, tournsize=10, fit_attr='fitshare')
 
 # AllBinSeq = GenBinSeq(IND_SIZE)
 # AllPossibleFits = [MaxMinEval(i)[0] for i in AllBinSeq]
