@@ -15,6 +15,13 @@ def PlotBinSeq(BinSeq, FitValue, PlotProperty):
     plt.grid(True)
     return plt
 
+def PlotBinFct(BinSeq, FitFunction, PlotProperty):
+    yaxis=[FitFunction(i) for i in BinSeq]  # evaluate the FitFunction
+    xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
+    plt.plot(xaxis,FitValue, str(PlotProperty))
+    plt.grid(True)
+    return plt
+
 def ScatBinSeq(BinSeq, FitValue):
     # yaxis=[FitFunction(i) for i in BinSeq]  # evaluate the FitFunction
     xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
