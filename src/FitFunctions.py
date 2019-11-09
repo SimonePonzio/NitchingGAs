@@ -17,3 +17,6 @@ def FnctA(individual):
 def FnctB(individual):
     x=NormBinSeqToNum(individual)
     return ( exp( -2*(log(2))*(( (x-0.08)/(0.834) )**2) ) )*( FnctA(individual)[0] ),
+
+MaxFnctA=[ [0.08,1], [0.247,1], [0.451,1], [0.681,1], [0.934,1] ]
+MaxFnctB=[ [0.08,1], [0.247,0.948], [0.451,0.770], [0.681,0.503], [0.934,0.250] ]
