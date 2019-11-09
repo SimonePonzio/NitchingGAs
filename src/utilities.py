@@ -8,30 +8,32 @@ import itertools
 def GenBinSeq(k):
     return [list(map(int,x)) for x in itertools.product('01', repeat=k)]
 
+def BinSeqToNum(BinSeq):
+    return int("".join([str(i) for i in BinSeq]), 2)
+
+def NormBinSeqToNum(BinSeq):
+    return (BinSeqToNum(BinSeq)/(2**len(BinSeq)-1))
+
 def PlotBinSeq(BinSeq, FitValue, PlotProperty='b-'):
     xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
     plt.plot(xaxis,FitValue, str(PlotProperty))
-    plt.grid(True)
     return plt
 
 def PlotBinFct(BinSeq, FitFunction, PlotProperty='b-'):
     yaxis=[FitFunction(i)[0] for i in BinSeq]  # evaluate the FitFunction
     xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
     plt.plot(xaxis,yaxis, str(PlotProperty))
-    plt.grid(True)
     return plt
 
 def ScatBinSeq(BinSeq, FitValue):
     xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
     plt.scatter(xaxis,FitValue)
-    plt.grid(True)
     return plt
 
 def ScatBinFct(BinSeq, FitFunction):
     yaxis=[FitFunction(i)[0] for i in BinSeq]  # evaluate the FitFunction
     xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
     plt.scatter(xaxis,yaxis)
-    plt.grid(True)
     return plt
     
 def BarBinFct(BinSeq, FitFunction):
