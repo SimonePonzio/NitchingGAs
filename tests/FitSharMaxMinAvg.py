@@ -7,14 +7,16 @@ import matplotlib.pyplot as plt
 from NitchingMethods import FitSharing
 from distFunctions import NormHamming2
 from statistics import mean
-from FitFunctions import MaxMinEval
+from FitFunctions import MaxMinEval, FnctA, FnctB
 
 # define Individual size
-IND_SIZE = 10
+IND_SIZE = 12
 # define num of individual
 NUM_IND = 100
 # define max num of generations
-MAX_NUM_GEN = 2
+MAX_NUM_GEN = 50
+# define the fitness function between [FnctA, FnctB]
+FitnessFunction = FnctB
 
 creator.create("FitnShare", base.Fitness, weights=(1.0,))
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -22,7 +24,7 @@ creator.create("Individual", list, fitness=creator.FitnessMax, fitshare=creator.
 
 toolbox = base.Toolbox()
 
-toolbox.register("evalfit", MaxMinEval)
+toolbox.register("evalfit", FitnessFunction)
 toolbox.register("evalfitsh", FitSharing, fitFunction=toolbox.evalfit, distanceFunction=NormHamming2, sigma=0.8)
 toolbox.register("attr_bool", random.randint, 0, 1)
 toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, n=IND_SIZE)
@@ -56,9 +58,9 @@ print("Max Fintness last gen = ", MaxFitness[MAX_NUM_GEN-1])
 print("Avg Fintness last gen = ", AvgFitness[MAX_NUM_GEN-1])
 
 num_gen=[i for i in range(MAX_NUM_GEN)]
-plt.plot(num_gen, MinFitness, 'b', label='MinFitness')
 plt.plot(num_gen, MaxFitness, 'r', label='MaxFitness')
 plt.plot(num_gen, AvgFitness, 'g', label='AvgFitness')
+plt.plot(num_gen, MinFitness, 'b', label='MinFitness')
 plt.title('generation VS fitness')
 plt.xlabel('generation')
 plt.ylabel('Fitness')
