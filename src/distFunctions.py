@@ -12,7 +12,28 @@ def NormHamming2(x,y):
 def FloatDist(x,y):
     return abs(x - y)
 
-def BestMatch(goal_ind, population, dist_funct=FloatDist):
+def BestMatch(population, goal_ind, dist_funct=FloatDist):
     dist_ind = [(dist_funct(goal_ind[0], individual[0])) for individual in population]
     BestInd = population[dist_ind.index(min(dist_ind))]
     return BestInd
+
+def NitchCluster(population, rapresentative, dist_funct=FloatDist, nitch_radius=0.1, attr_value="value"):
+    # WARNING: need to insert a control machanism on the overlap between vip area - the overlap is forbidden!
+
+    # define vip areas
+    vip_areas=[[getattr(vip, attr_value)-nitch_radius,getattr(vip, attr_value)+nitch_radius] for vip in rapresentative]
+    nitches=[ [] for i in range(len(vip_areas)+1) ]    
+
+    # assign each individual to a vip area or to the non-vip area it it doesn't match with any vip area
+    for ind in population:
+        is_assigned=False
+        for vip_zone,idx in zip(vip_areas,range(len(vip_areas)+1)):
+            if min(vip_zone) <= getattr(ind, attr_value) <= max(vip_zone):
+                nitches[idx].append(ind)
+                is_assigned=True
+                break
+        if (is_assigned==False):
+            nitches[len(vip_areas)].append(ind)
+            is_assigned=False
+            
+    return nitches
