@@ -13,7 +13,7 @@ def FloatDist(x,y):
     return abs(x - y)
 
 def BestMatch(population, goal_ind, dist_funct=FloatDist):
-    dist_ind = [(dist_funct(goal_ind[0], individual[0])) for individual in population]
+    dist_ind = [(dist_funct(goal_ind.value, individual.value)) for individual in population]
     BestInd = population[dist_ind.index(min(dist_ind))]
     return BestInd
 

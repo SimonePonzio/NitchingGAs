@@ -7,9 +7,9 @@ def MaxPeakRatio(population, real_opt, dist_funct=FloatDist, sigma=0.1, fit_matc
     num=0
     for vip in real_opt:
         best_ind = BestMatch(population, vip, dist_funct)
-        if (dist_funct(vip[0],best_ind[0])<sigma and best_ind[1]/vip[1]>fit_match):
-             num=num+best_ind[1]
-    den=sum([ vip[1] for vip in real_opt ])
+        if (dist_funct(vip.value,best_ind.value)<sigma and best_ind.fitness.values[0]/vip.fitness>fit_match):
+             num=num+best_ind.fitness.values[0]
+    den=sum([ vip.fitness for vip in real_opt ])
     return num/den
 
 
