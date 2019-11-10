@@ -5,7 +5,7 @@ from deap import creator, base, tools, algorithms
 from utilities import PlotBinSeq, ScatBinFct, GenBinSeq, NormBinSeqToNum
 from matplotlib import pyplot as plt
 from matplotlib import animation
-from NitchingMethods import FitSharing
+from NichingMethods import FitSharing
 from distFunctions import NormHamming2
 from FitFunctions import FnctA, FnctB
 import numpy as np

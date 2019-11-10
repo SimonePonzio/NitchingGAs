@@ -1,15 +1,10 @@
 #!/usr/bin/python3
 
-# MyPop=[ [0.08,1], [0.220,1], [0.451,0.95], [0.670,0.95], [0.9,0.7] ]
-# print(MaxPeakRatio(MyPop, MaxFnctA))
-
-#!/usr/bin/python3
-
 import random
 from deap import creator, base, tools, algorithms
 from utilities import NormBinSeqToNum, PlotBinSeq, ScatBinFct, GenBinSeq
 import matplotlib.pyplot as plt
-from NitchingMethods import FitSharing
+from NichingMethods import FitSharing
 from distFunctions import NormHamming2
 from statistics import mean
 from FitFunctions import MaxMinEval, FnctA, FnctB, MaxFnctA, MaxFnctB
@@ -56,4 +51,7 @@ for num_gen in range(MAX_NUM_GEN):
     BenchMark.append(MaxPeakRatio(final_pop, MaxFnctA))
 
 plt.scatter([i for i in range(MAX_NUM_GEN)],BenchMark)
+plt.title('generation VS MaxPeakRatio')
+plt.xlabel('generation')
+plt.ylabel('MaxPeakRatio')
 plt.show()

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from distFunctions import FloatDist, BestMatch, NitchCluster
+from distFunctions import FloatDist, BestMatch, NichCluster
 from math import sqrt
 
 def MaxPeakRatio(population, real_opt, dist_funct=FloatDist, sigma=0.1, fit_match=0.8):
@@ -13,12 +13,13 @@ def MaxPeakRatio(population, real_opt, dist_funct=FloatDist, sigma=0.1, fit_matc
     return num/den
 
 
-def ChiSquareLike(population, real_opt, nitch_radius=0.1, dist_funct=FloatDist, fitness="fitness", attr_value="value"):
+def ChiSquareLike(population, real_opt, nich_radius=0.1, dist_funct=FloatDist, fitness="fitness", attr_value="value"):
     """
-    population is a list of individuals
-    real_opt is a list of individuals and has an attribute 'fitness'
+    population is a list of individuals to evaluate.
+    real_opt is the list of the real best individuals.
+    each indiviadual has attributes [for istance: value, fitness, ecc..] 
     """
-    actual_distr=[len(nitch) for nitch in NitchCluster(population, real_opt, dist_funct=dist_funct, attr_value=attr_value)]
+    actual_distr=[len(nich) for nich in NichCluster(population, real_opt, dist_funct=dist_funct, attr_value=attr_value)]
     real_opt_fit_sum=sum([getattr(i, fitness) for i in real_opt])
     poplen=len(population)
     last_sigma=0
@@ -28,11 +29,11 @@ def ChiSquareLike(population, real_opt, nitch_radius=0.1, dist_funct=FloatDist, 
         if idx<len(real_opt):
             mid=poplen*getattr(real_opt[idx],fitness)/real_opt_fit_sum # mid = mean ideal distribution
             sigma=mid*(1-(mid/poplen))
-            last_sigma=last_sigma+sigma
+            last_sigma=last_sigma+(sigma**2)
         else:
             mid=0
             sigma=last_sigma
     
-        csl_square=csl_square+( ((adi-mid)/sigma)**2 )
+        csl_square=csl_square+( ((adi-mid)/(sigma**2))**2 )
 
     return sqrt(csl_square)

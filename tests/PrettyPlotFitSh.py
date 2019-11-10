@@ -4,7 +4,7 @@ import random
 from deap import creator, base, tools, algorithms
 from utilities import PlotBinSeq, ScatBinFct, GenBinSeq
 import matplotlib.pyplot as plt
-from NitchingMethods import FitSharing
+from NichingMethods import FitSharing
 from distFunctions import NormHamming2
 from FitFunctions import FnctA, FnctB
 
