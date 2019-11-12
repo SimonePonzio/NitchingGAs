@@ -2,6 +2,7 @@
 
 from deap import tools
 from distFunctions import NicheAssign
+import itertools
 
 def FitSharing(individual, pop, fitFunction, distanceFunction, sigma=0.2, shape=1, scaling=1):
     niche = 0
@@ -83,3 +84,57 @@ def DummyClearing(population, fit_funct, dist_funct, clear_radius, niche_cap):
                     population[oth].fitclearing.values=0,   # reset the clearing fitness
                
         BestNicheInd.clear()
+
+# Deterministic crowding technique
+def DetCrowding(population, offspring, gen_gap, dist_funct, niche_radius, tourn_size=2, pos_attr="position", fit_attr="fitness"):
+
+    # clusterize the population and the offspring in niches based on the niche radius
+    ParentClusters=NicheAssign(population, dist_funct, niche_radius, attr_value=pos_attr)
+    OffsprClusters=NicheAssign(offspring, dist_funct, niche_radius, attr_value=pos_attr )
+
+    # evaluate the new population based on the gen_gap percentace
+    MaxNumOfChanges=gen_gap*len(population)
+    NumOfChanges=0
+    NicheStatus=[True for i in range(len(OffsprClusters))]
+
+    # until the number of changes in the population is not the MaxNumOfChanges
+    while NumOfChanges<MaxNumOfChanges:
+        # cicle through the parents and children niches lists 
+        for (ParNiche, ChildNiche, idx) in zip(ParentClusters, OffsprClusters, len(OffsprClusters)):
+            # initialize two list of elements for parents and children
+            parents=[]
+            children=[]
+
+            # check if fetched niches are full
+            if ParNiche and ChildNiche:
+                # append two alement from the ParentNiche and the Child Niche to the parents and children list
+                parents.extend(ParNiche.pop(0) for i in range(tourn_size))
+                children.extend(ChildNiche.pop(0) for i in range(tourn_size))
+                # evaluate the best set of tournaments and return the winner couple (two parents / two children / one parent-one children):
+                winners=FamilyKillMatch(parents, children, dist_funct, pos_attr=pos_attr, fit_attr=fit_attr)
+                # append the winners couple at the ParentClusters
+                ParentClusters.append(winners)
+                NumOfChanges=NumOfChanges+len(parents)
+
+            # check if any niche is still full
+            elif True in NicheStatus:
+                NicheStatus[idx]=False
+
+            # no niches are full, break the while loop forcing the 
+            else:
+                NumOfChanges=MaxNumOfChanges
+                break
+    
+    # create a new population joining all the remaning niches in ParentClusters and the new gruop added during the crowding selection
+    population=list(itertools.chain.from_iterable(ParentClusters))
+
+
+
+def FamilyKillMatch(parents, children, dist_funct, pos_attr="position", fit_attr="fitness"):
+    """
+        this mortal family match is a duel between the nearest couple of parents and children.
+        the function returns a list of legth=len(parents)=len(children) filled with the winner elements.
+        if the parent list and the children list don't have the same length, the function return an epty list.
+    """
+
+    return children
