@@ -4,11 +4,12 @@ import random
 from deap import creator, base, tools, algorithms
 from utilities import NormBinSeqToNum, PlotBinSeq, ScatBinFct, GenBinSeq
 import matplotlib.pyplot as plt
-from NichingMethods import FitSharing, Clearing
+from NichingMethods import Clearing
 from distFunctions import NormHamming2, NichCluster
 from statistics import mean
 from FitFunctions import MaxMinEval, FnctA, FnctB, MaxFnctA, MaxFnctB
 from benchmark import MaxPeakRatio, ChiSquareLike
+from math import floor
 
 # configure Individual size
 IND_SIZE = 12
@@ -17,13 +18,13 @@ NUM_IND = 100
 # configure max num of generations
 NUM_GEN = 200
 # configure the fitness function [FnctA, FnctB]
-FitnessFunction = FnctB
+FitnessFunction = FnctA
 # configure the corresponding set of PeackValues [MaxFnctA, MaxFnctB]
-PeackValues = MaxFnctB
+PeackValues = MaxFnctA
 # configure selection method ['TR', 'SUS']
 SelectMeth = 'SUS'
 # configure ricombination method ['OneCx', 'StdUnifCx', 'TwoCx']
-RecombMeth = 'OneCx'
+RecombMeth = 'StdUnifCx'
 # configure the crossover probability
 CxProbability = 1
 # configure the Std-Uniform-Crossover probability.
@@ -46,7 +47,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 # fitness evaluation
 toolbox.register("evalfit", FitnessFunction)
 # fitness niching evaluation
-toolbox.register("evalniching", Clearing, fit_funct=toolbox.evalfit, dist_funct=NormHamming2, clear_radius=0.1,niche_cap=5, attr_value="value")
+toolbox.register("evalniching", Clearing, fit_funct=toolbox.evalfit, dist_funct=NormHamming2, clear_radius=0.1,niche_cap=floor((NUM_IND)/10), attr_value="value")
 # selection methods
 if SelectMeth is 'TR':
     toolbox.register("select", tools.selTournament, tournsize=3, fit_attr='fitclearing')
@@ -61,6 +62,8 @@ elif RecombMeth is 'TwoCx':
     toolbox.register("mate", tools.cxTwoPoint)
 elif RecombMeth is 'StdUnifCx':
     toolbox.register("mate", tools.cxUniform, indpb=StdUnifCxProb)
+else:
+    print("please chose a valid option")
 # mutation method
 toolbox.register("mutate", tools.mutFlipBit, indpb=MxProbability)
 
@@ -81,7 +84,7 @@ mpr_val=[]
 # GAs evaluation
 for gen in range(NUM_GEN):
     # Mating
-    offspring = algorithms.varAnd(population, toolbox, cxpb=0.1, mutpb=0.01)
+    offspring = algorithms.varAnd(population, toolbox, cxpb=CxProbability, mutpb=MxProbability)
     # Evaluation
     toolbox.evalniching(offspring)
     # Selection
@@ -89,7 +92,6 @@ for gen in range(NUM_GEN):
 
     for ind in population:
         ind.value=NormBinSeqToNum(ind)
-        ind.fitness.values=toolbox.evalfit(ind)
 
     MinFitness.append(min([ind.fitness.values[0] for ind in population]))
     MaxFitness.append(max([ind.fitness.values[0] for ind in population]))
@@ -104,19 +106,21 @@ print("Mean Chi-Square=", mean(csq_dev))
 print("Max Chi-Square=", max(csq_dev)) 
 
 # final plot results
-plt.subplot(131)
+plt.subplot(141)
 plt.plot([i for i in range(NUM_GEN)],csq_dev)
 plt.title('generation VS ChiSquareLike')
 plt.xlabel('generation')
 plt.ylabel('ChiSquareLike')
+plt.grid(True)
 
-plt.subplot(132)
-plt.scatter([i for i in range(NUM_GEN)],mpr_val)
+plt.subplot(142)
+plt.plot([i for i in range(NUM_GEN)],mpr_val)
 plt.title('generation VS MaxPeakRatio')
 plt.xlabel('generation')
 plt.ylabel('MaxPeakRatio')
+plt.grid(True)
 
-plt.subplot(133)
+plt.subplot(143)
 num_gen=[i for i in range(NUM_GEN)]
 plt.plot(num_gen, MaxFitness, 'r', label='MaxFitness')
 plt.plot(num_gen, AvgFitness, 'g', label='AvgFitness')
@@ -127,11 +131,15 @@ plt.ylabel('Fitness')
 plt.grid(True)
 plt.legend()
 
-plt.show()
-
 # niches graphical rapresentation 
+plt.subplot(144)
 AllBinSeq = GenBinSeq(IND_SIZE)
 AllPossibleFits = [FitnessFunction(i)[0] for i in AllBinSeq]
 PlotBinSeq(AllBinSeq, AllPossibleFits, 'r')
 ScatBinFct(population, FitnessFunction)
+plt.title('fitness VS individuals')
+plt.xlabel('Individuals')
+plt.ylabel('Fitness')
+plt.grid(True)
+
 plt.show()

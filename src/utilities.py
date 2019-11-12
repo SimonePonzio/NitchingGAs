@@ -15,13 +15,14 @@ def NormBinSeqToNum(BinSeq):
     return (BinSeqToNum(BinSeq)/(2**len(BinSeq)-1))
 
 def PlotBinSeq(BinSeq, FitValue, PlotProperty='b-'):
-    xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
+    xaxis=[NormBinSeqToNum(i) for i in BinSeq]
+    # xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
     plt.plot(xaxis,FitValue, str(PlotProperty))
     return plt
 
 def PlotBinFct(BinSeq, FitFunction, PlotProperty='b-'):
     yaxis=[FitFunction(i)[0] for i in BinSeq]  # evaluate the FitFunction
-    xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
+    xaxis=[NormBinSeqToNum(i) for i in BinSeq]
     plt.plot(xaxis,yaxis, str(PlotProperty))
     return plt
 
@@ -32,7 +33,7 @@ def ScatBinSeq(BinSeq, FitValue):
 
 def ScatBinFct(BinSeq, FitFunction):
     yaxis=[FitFunction(i)[0] for i in BinSeq]  # evaluate the FitFunction
-    xaxis=[ "".join([(str(i)) for i in j]) for j in BinSeq]
+    xaxis=[NormBinSeqToNum(i) for i in BinSeq]
     plt.scatter(xaxis,yaxis)
     return plt
     
