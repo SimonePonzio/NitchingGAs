@@ -13,15 +13,15 @@ from benchmark import MaxPeakRatio, ChiSquareLike
 # configure Individual size
 IND_SIZE = 12
 # configure num of individual
-NUM_IND = 30
+NUM_IND = 100
 # configure max num of generations
-NUM_GEN = 30
+NUM_GEN = 200
 # configure the fitness function [FnctA, FnctB]
-FitnessFunction = FnctA
+FitnessFunction = FnctB
 # configure the corresponding set of PeackValues [MaxFnctA, MaxFnctB]
-PeackValues = MaxFnctA
+PeackValues = MaxFnctB
 # configure selection method ['TR', 'SUS']
-SelectMeth = 'TR'
+SelectMeth = 'SUS'
 # configure ricombination method ['OneCx', 'StdUnifCx', 'TwoCx']
 RecombMeth = 'OneCx'
 # configure the crossover probability
@@ -127,4 +127,11 @@ plt.ylabel('Fitness')
 plt.grid(True)
 plt.legend()
 
+plt.show()
+
+# niches graphical rapresentation 
+AllBinSeq = GenBinSeq(IND_SIZE)
+AllPossibleFits = [FitnessFunction(i)[0] for i in AllBinSeq]
+PlotBinSeq(AllBinSeq, AllPossibleFits, 'r')
+ScatBinFct(population, FitnessFunction)
 plt.show()

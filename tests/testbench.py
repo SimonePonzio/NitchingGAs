@@ -21,7 +21,7 @@ FitnessFunction = FnctA
 # configure the corresponding set of PeackValues [MaxFnctA, MaxFnctB]
 PeackValues = MaxFnctA
 # configure selection method ['TR', 'SUS']
-SelectMeth = 'TR'
+SelectMeth = 'SUS'
 # configure ricombination method ['OneCx', 'StdUnifCx', 'TwoCx']
 RecombMeth = 'OneCx'
 # configure the crossover probability
@@ -60,6 +60,8 @@ elif RecombMeth is 'TwoCx':
     toolbox.register("mate", tools.cxTwoPoint)
 elif RecombMeth is 'StdUnifCx':
     toolbox.register("mate", tools.cxUniform, indpb=StdUnifCxProb)
+else:
+    print("please chose a valid option")
 # mutation method
 toolbox.register("mutate", tools.mutFlipBit, indpb=MxProbability)
 
@@ -71,6 +73,9 @@ for ind,rap in zip(rapresentative,PeackValues):
 
 # GAs evaluation
 population = toolbox.population(n=NUM_IND)
+MinFitness=[]
+MaxFitness=[]
+AvgFitness=[]
 csq_dev=[]
 mpr_val=[]
 
@@ -84,6 +89,10 @@ for gen in range(NUM_GEN):
         ind.value=NormBinSeqToNum(ind)
         ind.fitness.values=toolbox.evalfit(ind)
 
+    MinFitness.append(min([ind.fitness.values[0] for ind in population]))
+    MaxFitness.append(max([ind.fitness.values[0] for ind in population]))
+    AvgFitness.append(mean([ind.fitness.values[0] for ind in population]))
+
     csq_dev.append(ChiSquareLike(population, rapresentative, nich_radius=0.1))
     mpr_val.append(MaxPeakRatio(population, rapresentative))
 
@@ -93,15 +102,37 @@ print("Mean Chi-Square=", mean(csq_dev))
 print("Max Chi-Square=", max(csq_dev)) 
 
 # final plot results
-plt.subplot(121)
+plt.subplot(141)
 plt.plot([i for i in range(NUM_GEN)],csq_dev)
 plt.title('generation VS ChiSquareLike')
 plt.xlabel('generation')
 plt.ylabel('ChiSquareLike')
 
-plt.subplot(122)
-plt.scatter([i for i in range(NUM_GEN)],mpr_val)
+plt.subplot(142)
+plt.plot([i for i in range(NUM_GEN)],mpr_val)
 plt.title('generation VS MaxPeakRatio')
 plt.xlabel('generation')
 plt.ylabel('MaxPeakRatio')
+
+plt.subplot(143)
+num_gen=[i for i in range(NUM_GEN)]
+plt.plot(num_gen, MaxFitness, 'r', label='MaxFitness')
+plt.plot(num_gen, AvgFitness, 'g', label='AvgFitness')
+plt.plot(num_gen, MinFitness, 'b', label='MinFitness')
+plt.title('generation VS fitness')
+plt.xlabel('generation')
+plt.ylabel('Fitness')
+plt.grid(True)
+plt.legend()
+
+# niches graphical rapresentation 
+plt.subplot(144)
+AllBinSeq = GenBinSeq(IND_SIZE)
+AllPossibleFits = [FitnessFunction(i)[0] for i in AllBinSeq]
+PlotBinSeq(AllBinSeq, AllPossibleFits, 'r')
+ScatBinFct(population, FitnessFunction)
+plt.title('fitness VS individuals')
+plt.xlabel('Individuals')
+plt.ylabel('Fitness')
+
 plt.show()
