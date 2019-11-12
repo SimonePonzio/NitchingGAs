@@ -12,7 +12,7 @@ from benchmark import MaxPeakRatio, ChiSquareLike
 from math import floor
 
 # configure Individual size
-IND_SIZE = 12
+IND_SIZE = 100
 # configure num of individual
 NUM_IND = 100
 # configure max num of generations
@@ -133,7 +133,7 @@ plt.legend()
 
 # niches graphical rapresentation 
 plt.subplot(144)
-AllBinSeq = GenBinSeq(IND_SIZE)
+AllBinSeq = GenBinSeq(10)
 AllPossibleFits = [FitnessFunction(i)[0] for i in AllBinSeq]
 PlotBinSeq(AllBinSeq, AllPossibleFits, 'r')
 ScatBinFct(population, FitnessFunction)
