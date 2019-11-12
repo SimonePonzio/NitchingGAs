@@ -1,0 +1,5 @@
+# Don't track content of these folders
+src/__pycache__
+
+# Don't track files with this name
+Dummy*
