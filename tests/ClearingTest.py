@@ -47,7 +47,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 # fitness evaluation
 toolbox.register("evalfit", FitnessFunction)
 # fitness niching evaluation
-toolbox.register("evalniching", Clearing, fit_funct=toolbox.evalfit, dist_funct=NormHamming2, clear_radius=0.1,niche_cap=floor((NUM_IND)/10), attr_value="value")
+toolbox.register("evalniching", Clearing, fit_funct=toolbox.evalfit, clear_radius=0.1, niche_cap=floor((NUM_IND)/10), attr_value="value")
 # selection methods
 if SelectMeth is 'TR':
     toolbox.register("select", tools.selTournament, tournsize=3, fit_attr='fitclearing')

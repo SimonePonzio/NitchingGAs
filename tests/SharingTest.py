@@ -5,7 +5,7 @@ from deap import creator, base, tools, algorithms
 from utilities import NormBinSeqToNum, PlotBinSeq, ScatBinFct, GenBinSeq
 import matplotlib.pyplot as plt
 from NichingMethods import Sharing
-from distFunctions import NormHamming2, NichCluster
+from distFunctions import NormHamming2, NichCluster, FloatDist
 from statistics import mean
 from FitFunctions import MaxMinEval, FnctA, FnctB, MaxFnctA, MaxFnctB
 from benchmark import MaxPeakRatio, ChiSquareLike
@@ -46,7 +46,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 # fitness evaluation
 toolbox.register("evalfit", FitnessFunction)
 # fitness niching evaluation
-toolbox.register("evalfitsh", Sharing, fit_funct=toolbox.evalfit, dist_funct=NormHamming2, share_radius=0.1)
+toolbox.register("evalfitsh", Sharing, fit_funct=toolbox.evalfit, dist_funct=FloatDist, share_radius=0.1)
 # selection methods
 if SelectMeth is 'TR':
     toolbox.register("select", tools.selTournament, tournsize=3, fit_attr='fitshare')

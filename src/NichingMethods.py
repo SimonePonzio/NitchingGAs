@@ -2,6 +2,7 @@
 
 from deap import tools
 from distFunctions import NicheAssign
+from utilities import NormBinSeqToNum
 import itertools
 
 def FitSharing(individual, pop, fitFunction, distanceFunction, sigma=0.2, shape=1, scaling=1):
@@ -24,7 +25,7 @@ def Sharing(population, fit_funct, dist_funct, share_radius, shape_factor=1, sca
 
         # evaluate the distance from the individual and the rest of population and update the niche factor
         for others in population:
-            dist = dist_funct(ind, others)
+            dist = dist_funct(NormBinSeqToNum(ind), NormBinSeqToNum(others))
             if dist < share_radius:
                 niche = niche + ( 1 - (dist/share_radius)**shape_factor )
         
@@ -32,13 +33,13 @@ def Sharing(population, fit_funct, dist_funct, share_radius, shape_factor=1, sca
         ind.fitshare.values = ( (ind.fitness.values[0]**scaling_factor)/niche ),
 
 
-def Clearing(population, fit_funct, dist_funct, clear_radius, niche_cap=5, attr_value="value"):
+def Clearing(population, fit_funct, clear_radius, niche_cap=5, attr_value="value"):
     # evaluate the fitness of each individual
     for ind in population:
         ind.fitness.values=fit_funct(ind)
 
     # each individual is assigned to a niche
-    niches=NicheAssign(population, dist_funct, clear_radius, attr_value=attr_value)
+    niches=NicheAssign(population, clear_radius, attr_value=attr_value)
 
     # fetch the best "niche_cap" individuals of each niche
     niche_leaders=[] # list of the best individuals in a niche
