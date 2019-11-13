@@ -5,7 +5,7 @@ from deap import creator, base, tools, algorithms
 from utilities import NormBinSeqToNum, PlotBinSeq, ScatBinFct, GenBinSeq
 import matplotlib.pyplot as plt
 from NichingMethods import DetCrowding
-from distFunctions import NormHamming2, NichCluster
+from distFunctions import NormHamming2, NichCluster, FloatDist
 from statistics import mean
 from FitFunctions import MaxMinEval, FnctA, FnctB, MaxFnctA, MaxFnctB
 from benchmark import MaxPeakRatio, ChiSquareLike
@@ -51,7 +51,7 @@ if SelectMeth is 'TR':
 elif SelectMeth is 'SUS':
     toolbox.register("select", tools.selStochasticUniversalSampling, fit_attr='fitclearing')
 elif SelectMeth is 'DC':
-    toolbox.register("select", DetCrowding, gen_gap=0.5, dist_funct=NormHamming2, niche_radius=0.1, tourn_size=2, pos_attr="position", fit_attr="fitness")
+    toolbox.register("select", DetCrowding, gen_gap=0.5, dist_funct=FloatDist, niche_radius=0.1, tourn_size=2, pos_attr="position", fit_attr="fitness")
 else:
     print("please chose a valid option")
 # recombination methods
@@ -95,9 +95,9 @@ for gen in range(NUM_GEN):
     for fit, ind in zip(fits, offspring):
         ind.fitness.values = fit
     # Selection
-    toolbox.select(population, offspring)
+    population=toolbox.select(population, offspring)
 
-    for ind in population:
+    for (ind, idx) in zip(population,range(len(population))):
         ind.position=NormBinSeqToNum(ind)
 
     MinFitness.append(min([ind.fitness.values[0] for ind in population]))

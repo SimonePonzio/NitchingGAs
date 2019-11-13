@@ -91,7 +91,7 @@ def DetCrowding(population, offspring, gen_gap, dist_funct, niche_radius, tourn_
     # clusterize the population and the offspring in niches based on the niche radius
     ParentClusters=NicheAssign(population, dist_funct, niche_radius, attr_value=pos_attr)
     OffsprClusters=NicheAssign(offspring, dist_funct, niche_radius, attr_value=pos_attr )
-
+    
     # evaluate the new population based on the gen_gap percentace
     MaxNumOfChanges=gen_gap*len(population)
     NumOfChanges=0
@@ -111,10 +111,11 @@ def DetCrowding(population, offspring, gen_gap, dist_funct, niche_radius, tourn_
                 parents.extend(ParNiche.pop(0) for i in range(tourn_size))
                 children.extend(ChildNiche.pop(0) for i in range(tourn_size))
                 # evaluate the best set of tournaments and return the winner couple (two parents / two children / one parent-one children):
-                winners=FamilyKillMatch(parents, children, dist_funct, pos_attr=pos_attr, fit_attr=fit_attr)
-                # append the winners couple at the ParentClusters
-                ParentClusters.append(winners)
-                NumOfChanges=NumOfChanges+len(parents)
+                winners=FamilyKillMatch(parents, children, dist_funct, pos_attr=pos_attr, fit_attr=fit_attr, tourn_size=tourn_size)
+                # append the winners couple at the ParentClusters if the winners list is not empty
+                if winners:
+                    ParentClusters.append(winners)
+                    NumOfChanges=NumOfChanges+len(parents)
 
             # check if any niche is still full
             elif True in NicheStatus:
@@ -126,15 +127,48 @@ def DetCrowding(population, offspring, gen_gap, dist_funct, niche_radius, tourn_
                 break
     
     # create a new population joining all the remaning niches in ParentClusters and the new gruop added during the crowding selection
-    population=list(itertools.chain.from_iterable(ParentClusters))
+    NewPopulation=list(itertools.chain.from_iterable(ParentClusters))
+    return NewPopulation
 
 
-
-def FamilyKillMatch(parents, children, dist_funct, pos_attr="position", fit_attr="fitness"):
+def FamilyKillMatch(parents, children, dist_funct, pos_attr="position", fit_attr="fitness", tourn_size=2):
     """
         this mortal family match is a duel between the nearest couple of parents and children.
         the function returns a list of legth=len(parents)=len(children) filled with the winner elements.
         if the parent list and the children list don't have the same length, the function return an epty list.
+        
+        WARNING: this function works only for legth=len(parents)=len(children)=2. It would be funny make it work for a generic list size... but it is now out of purpose.
     """
-    
-    return children
+    winners=[]
+    # if the parents and children list size are not equal retun an empty list
+    if len(parents)==len(children):     
+        # now it works just for a list size = 2. 
+        if len(parents) is 2:
+            # evaluate the distance sum between the possible couples
+            DirecDist=dist_funct( getattr(parents[0], pos_attr),getattr(children[0], pos_attr)) + dist_funct(getattr(parents[1], pos_attr),getattr(children[1], pos_attr) )
+            CrossDist=dist_funct( getattr(parents[0], pos_attr),getattr(children[1], pos_attr)) + dist_funct(getattr(parents[1], pos_attr),getattr(children[0], pos_attr) )
+            
+            # evaluate the nearest couples and run a tournamet based on the fitness attribute
+            if DirecDist > CrossDist:
+                if getattr(parents[0], fit_attr) > getattr(children[0], fit_attr):
+                    winners.append(parents[0])
+                else:
+                    winners.append(children[0])
+
+                if getattr(parents[1], fit_attr) > getattr(children[1], fit_attr):
+                    winners.append(parents[1])
+                else:
+                    winners.append(children[1])
+
+            else:
+                if getattr(parents[0], fit_attr) > getattr(children[1], fit_attr):
+                    winners.append(parents[0])
+                else:
+                    winners.append(children[1])
+                
+                if getattr(parents[1], fit_attr) > getattr(children[0], fit_attr):
+                    winners.append(parents[1])
+                else:
+                    winners.append(children[0])
+
+    return winners
