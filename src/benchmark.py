@@ -3,15 +3,16 @@
 from distFunctions import FloatDist, BestMatch, NichCluster
 from math import sqrt
 
-def MaxPeakRatio(population, real_opt, dist_funct=FloatDist, sigma=0.1, fit_match=0.8):
+def MaxPeakRatio(population, real_opt, dist_funct=FloatDist, sigma=0.1, fit_match=0.8, pos_attr="value"):
     num=0
     for vip in real_opt:
-        best_ind = BestMatch(population, vip, dist_funct)
-        if (dist_funct(vip.value,best_ind.value)<sigma and best_ind.fitness.values[0]/vip.fitness>fit_match):
+        best_ind = BestMatch(population, vip, dist_funct, pos_attr=pos_attr)
+        if (dist_funct(getattr(vip,pos_attr),getattr(best_ind,pos_attr))<sigma and best_ind.fitness.values[0]/vip.fitness>fit_match):
              num=num+best_ind.fitness.values[0]
     den=sum([ vip.fitness for vip in real_opt ])
     return num/den
 
+#getattr(vip,pos_attr)  #getattr(best_ind,pos_attr)
 
 def ChiSquareLike(population, real_opt, nich_radius=0.1, dist_funct=FloatDist, fitness="fitness", attr_value="value"):
     """

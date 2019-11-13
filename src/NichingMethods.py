@@ -100,7 +100,7 @@ def DetCrowding(population, offspring, gen_gap, dist_funct, niche_radius, tourn_
     # until the number of changes in the population is not the MaxNumOfChanges
     while NumOfChanges<MaxNumOfChanges:
         # cicle through the parents and children niches lists 
-        for (ParNiche, ChildNiche, idx) in zip(ParentClusters, OffsprClusters, len(OffsprClusters)):
+        for (ParNiche, ChildNiche, idx) in zip(ParentClusters, OffsprClusters, range(len(OffsprClusters))):
             # initialize two list of elements for parents and children
             parents=[]
             children=[]
@@ -136,5 +136,5 @@ def FamilyKillMatch(parents, children, dist_funct, pos_attr="position", fit_attr
         the function returns a list of legth=len(parents)=len(children) filled with the winner elements.
         if the parent list and the children list don't have the same length, the function return an epty list.
     """
-
+    
     return children
