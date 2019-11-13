@@ -71,6 +71,8 @@ rapresentative=toolbox.population(n=len(PeackValues))
 for ind,rap in zip(rapresentative,PeackValues):
     ind.position=rap[0]
     ind.fitness=rap[1]
+AllBinSeq = GenBinSeq(10)
+AllPossibleFits = [FitnessFunction(i)[0] for i in AllBinSeq]
 
 # GAs initializzation
 population = toolbox.population(n=NUM_IND)
@@ -80,16 +82,28 @@ AvgFitness=[]
 csq_dev=[]
 mpr_val=[]
 
-
-# Fist Evaluation
+# Fist Fitness Evaluation
 fits = toolbox.map(toolbox.evalfit, population)
 for fit, ind in zip(fits, population):
     ind.fitness.values = fit
+
+# first generation plot
+plt.subplot(234)
+PlotBinSeq(AllBinSeq, AllPossibleFits, 'r')
+ScatBinFct(population, FitnessFunction)
+plt.title('First generation')
+plt.xlabel('Individuals')
+plt.ylabel('Fitness')
+plt.grid(True)
 
 # GAs evaluation
 for gen in range(NUM_GEN):
     # Mating
     offspring = algorithms.varAnd(population, toolbox, cxpb=CxProbability, mutpb=MxProbability)
+    # evaluate the individual postion for both offspring and parents populations
+    for par,child in zip(population, offspring):
+        par.position=NormBinSeqToNum(par)
+        child.position=NormBinSeqToNum(child)
     # Evaluation
     fits = toolbox.map(toolbox.evalfit, offspring)
     for fit, ind in zip(fits, offspring):
@@ -113,21 +127,21 @@ print("Mean Chi-Square=", mean(csq_dev))
 print("Max Chi-Square=", max(csq_dev)) 
 
 # final plot results
-plt.subplot(141)
+plt.subplot(231)
 plt.plot([i for i in range(NUM_GEN)],csq_dev)
 plt.title('generation VS ChiSquareLike')
 plt.xlabel('generation')
 plt.ylabel('ChiSquareLike')
 plt.grid(True)
 
-plt.subplot(142)
+plt.subplot(232)
 plt.plot([i for i in range(NUM_GEN)],mpr_val)
 plt.title('generation VS MaxPeakRatio')
 plt.xlabel('generation')
 plt.ylabel('MaxPeakRatio')
 plt.grid(True)
 
-plt.subplot(143)
+plt.subplot(233)
 num_gen=[i for i in range(NUM_GEN)]
 plt.plot(num_gen, MaxFitness, 'r', label='MaxFitness')
 plt.plot(num_gen, AvgFitness, 'g', label='AvgFitness')
@@ -139,12 +153,10 @@ plt.grid(True)
 plt.legend()
 
 # niches graphical rapresentation 
-plt.subplot(144)
-AllBinSeq = GenBinSeq(10)
-AllPossibleFits = [FitnessFunction(i)[0] for i in AllBinSeq]
+plt.subplot(236)
 PlotBinSeq(AllBinSeq, AllPossibleFits, 'r')
 ScatBinFct(population, FitnessFunction)
-plt.title('fitness VS individuals')
+plt.title('Last Generation')
 plt.xlabel('Individuals')
 plt.ylabel('Fitness')
 plt.grid(True)

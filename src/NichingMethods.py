@@ -4,6 +4,7 @@ from deap import tools
 from distFunctions import NicheAssign
 from utilities import NormBinSeqToNum
 import itertools
+import random
 
 def FitSharing(individual, pop, fitFunction, distanceFunction, sigma=0.2, shape=1, scaling=1):
     niche = 0
@@ -68,7 +69,7 @@ def DummyClearing(population, fit_funct, dist_funct, clear_radius, niche_cap):
         BestNicheInd=[[0,0]]    
 
         for oth in range(len(population)):
-            if dist_funct(population[ind_idx], population[oth])<clear_radius:
+            if dist_funct(NormBinSeqToNum(population[ind_idx]), NormBinSeqToNum(population[oth]))<clear_radius:
                 population[oth].fitness.values=fit_funct(population[oth])   # You could verify if it is already update to not evaluate it again
 
                 # evaluate if the individual has a best fitness
@@ -85,14 +86,15 @@ def DummyClearing(population, fit_funct, dist_funct, clear_radius, niche_cap):
                     population[oth].fitclearing.values=0,   # reset the clearing fitness
                
         BestNicheInd.clear()
+    return population
 
 # Deterministic crowding technique
 def DetCrowding(population, offspring, gen_gap, dist_funct, niche_radius, tourn_size=2, pos_attr="position", fit_attr="fitness"):
 
     # clusterize the population and the offspring in niches based on the niche radius
-    ParentClusters=NicheAssign(population, dist_funct, niche_radius, attr_value=pos_attr)
-    OffsprClusters=NicheAssign(offspring, dist_funct, niche_radius, attr_value=pos_attr )
-    
+    ParentClusters=NicheAssign(population, niche_radius, attr_value=pos_attr)
+    OffsprClusters=NicheAssign(offspring, niche_radius, attr_value=pos_attr )
+
     # evaluate the new population based on the gen_gap percentace
     MaxNumOfChanges=gen_gap*len(population)
     NumOfChanges=0
@@ -107,10 +109,13 @@ def DetCrowding(population, offspring, gen_gap, dist_funct, niche_radius, tourn_
             children=[]
 
             # check if fetched niches are full
-            if ParNiche and ChildNiche:
+            if len(ParNiche)>tourn_size and len(ChildNiche)>tourn_size:
                 # append two alement from the ParentNiche and the Child Niche to the parents and children list
-                parents.extend(ParNiche.pop(0) for i in range(tourn_size))
-                children.extend(ChildNiche.pop(0) for i in range(tourn_size))
+                for i in range(tourn_size):
+                    idx=random.randint(0,len(ParNiche)-1)
+                    parents.append(ParNiche.pop(idx))
+                    idx=random.randint(0,len(ChildNiche)-1)
+                    children.append(ChildNiche.pop(idx))
                 # evaluate the best set of tournaments and return the winner couple (two parents / two children / one parent-one children):
                 winners=FamilyKillMatch(parents, children, dist_funct, pos_attr=pos_attr, fit_attr=fit_attr, tourn_size=tourn_size)
                 # append the winners couple at the ParentClusters if the winners list is not empty
