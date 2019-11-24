@@ -11,8 +11,19 @@ def GenBinSeq(k):
 def BinSeqToNum(BinSeq):
     return int("".join([str(i) for i in BinSeq]), 2)
 
-def NormBinSeqToNum(BinSeq):
-    return (BinSeqToNum(BinSeq)/(2**len(BinSeq)-1))
+def NormBinSeqToNum(BinSeq, base=1):
+    return ((BinSeqToNum(BinSeq)*base)/(2**len(BinSeq)-1))
+
+# split the binary sequence in n same size chunks
+def SplitBinSeq(BinSeq, numchunks):
+    lenseq=len(BinSeq)
+    lenchunk=0
+    if lenseq%numchunks==0:
+        lenchunk=int(lenseq/numchunks)
+    else:
+        carry=lenseq%numchunks
+        lenchunk=int((lenseq-carry)/numchunks)
+    return [BinSeq[i:i+lenchunk] for i in range(0, lenseq, lenchunk)]
 
 def PlotBinSeq(BinSeq, FitValue, PlotProperty='b-'):
     xaxis=[NormBinSeqToNum(i) for i in BinSeq]

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from numpy import arange
+from math import sqrt
 
 # return the normalize hamming distance
 def NormHamming2(x,y):
@@ -17,6 +18,13 @@ def NormHamming2(x,y):
 
 def FloatDist(x,y):
     return abs(x - y)
+
+def EuclDist(x, y):
+    assert len(x) == len(y)
+    value=0
+    for i in range(len(x)):
+        value = value+(x[i]-y[i])**2
+    return sqrt( value )    
 
 def BestMatch(population, goal_ind, dist_funct=FloatDist, pos_attr="value"):
     dist_ind = [(dist_funct(getattr(goal_ind,pos_attr), getattr(individual,pos_attr))) for individual in population]
